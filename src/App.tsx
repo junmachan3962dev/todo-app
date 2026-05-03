@@ -1,13 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 //todo配列の型定義
 import type { Todo } from "./types/types";
 
 export const App = () => {
-  //---A. 状態（state）の定義
-  const [todos, setTodos] = useState<Todo[]>([]);
+  // ===A. 状態（state）の定義===
+  // ---データの保存（localStorage)---
+  // 1. 初期値の読み込み
+  // useStateの初期値に関数を渡すと、初回起動時に一度だけLocalStorageを見に行きます
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    const saveTodos = localStorage.getItem("todo-app-data");
+    //ローカルストレージにデータが入っていれば配列データとして取り出して、なければ空の配列を返す
+    return saveTodos ? JSON.parse(saveTodos) : [];
+  });
+  // 2. 自動保存
+  // todosの中身がわかるたびに、LocalStorageに中身を書き込む
+  useEffect(() => {
+    localStorage.setItem("todo-app-data", JSON.stringify(todos));
+  }, [todos]);
   const [inputValue, setInputValue] = useState("");
 
-  //--- B/ロジック（関数）---
+  // === B/ロジック（関数）===
   //文字が入力された時の処理の関数
   const handleAddTodo = () => {
     //空文字や空白はガードする（早期リターン）
@@ -34,7 +46,7 @@ export const App = () => {
     setTodos(todos.filter((t) => t.id !== id));
   };
 
-  //---UI（JSX)---
+  // ===UI（JSX)===
   return (
     <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
       <h1>My ToDo App</h1>
