@@ -52,13 +52,19 @@ export const App = () => {
       <h1>My ToDo App</h1>
 
       <div>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="入力してください"
-        />
-        <button onClick={handleAddTodo}>追加</button>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault(); //ページのリロードを防ぐ（必須）
+            handleAddTodo(); //これまでの追加ロジックを実行
+          }}>
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="入力してください"
+          />
+          <button onClick={handleAddTodo}>追加</button>
+        </form>
       </div>
 
       <ul style={{ padding: 0 }}>
